@@ -6,7 +6,7 @@
 
 即時對戰 · 用 Pull Request 加入天梯 · 大腦可以換：Jev、Laya、kev，或任何 LLM
 
-**[▶ 線上看天梯](https://your-name.github.io/jev-arena/)** · [English](README.md)
+**[▶ 線上看天梯](https://eliot5566.github.io/jev-arena/)** · [English](README.md)
 
 <img src="docs/demo.gif" alt="Jev Arena 對戰畫面，兩側即時顯示每個大腦的招式機率" width="880" />
 

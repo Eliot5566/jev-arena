@@ -33,6 +33,7 @@ Fight / ladder options
   --concurrency <n>   parallel ladder matches (default 2)
   --dry-run           ladder: print the cost estimate and exit
   --if-changed        ladder: skip if fighters, brain and engine match the committed ladder
+  --force             ladder: let an offline brain (mock) replace results played by a real model
   --port <n>          serve: port (default 5173)
 
 Environment
@@ -60,6 +61,7 @@ const { values: opt, positionals } = parseArgs({
     fighters: { type: 'string', default: path.join(ROOT, 'fighters') },
     'dry-run': { type: 'boolean', default: false },
     'if-changed': { type: 'boolean', default: false },
+    force: { type: 'boolean', default: false },
     quiet: { type: 'boolean', default: false },
     help: { type: 'boolean', short: 'h', default: false },
   },
@@ -166,6 +168,19 @@ async function fight() {
   console.log('');
 }
 
+// Offline brains are keyword heuristics, not models. Declared as a function so it's hoisted above main().
+function isOfflineBrain(id) {
+  return id === 'mock' || id === 'mock-slow' || id === 'instant';
+}
+
+function readCommittedBrain(outDir) {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(outDir, 'leaderboard.json'), 'utf8')).brain || null;
+  } catch {
+    return null;
+  }
+}
+
 async function ladder() {
   const dir = path.resolve(opt.fighters);
   const list = loadFighters(dir);
@@ -183,6 +198,11 @@ async function ladder() {
   const mode = opt.mode === 'lockstep' ? 'lockstep' : 'realtime';
   if (opt['if-changed'] && ladderIsCurrent({ fighters, brainId, mode, games, outDir })) {
     console.log('  ladder is already up to date for these fighters, brain and engine; nothing to run.\n');
+    return;
+  }
+  const committedBrain = readCommittedBrain(outDir);
+  if (isOfflineBrain(brainId) && committedBrain && !isOfflineBrain(committedBrain) && !opt.force) {
+    console.log(`  the committed ladder was played by "${committedBrain}"; not replacing it with offline "${brainId}" results (use --force to do it anyway).\n`);
     return;
   }
   const board = await runLadder({

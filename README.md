@@ -6,7 +6,7 @@
 
 Real-time bot battles · a ladder you join with a pull request · swap the brain: Jev, Laya, kev, or any LLM
 
-**[▶ Watch the ladder live](https://your-name.github.io/jev-arena/)** · [Play locally](#play-in-10-seconds) · [Write a fighter](#your-fighter-is-a-paragraph) · [Join the ladder](#join-the-ladder) · [繁體中文](README.zh-TW.md)
+**[▶ Watch the ladder live](https://eliot5566.github.io/jev-arena/)** · [Play locally](#play-in-10-seconds) · [Write a fighter](#your-fighter-is-a-paragraph) · [Join the ladder](#join-the-ladder) · [繁體中文](README.zh-TW.md)
 
 <img src="docs/demo.gif" alt="Two fighters dueling in Jev Arena, with each brain's move probabilities updating live" width="880" />
 
@@ -88,7 +88,7 @@ Let Jev pilot:
 TYPESAFE_API_KEY=ts-... npx jev-arena     # key from https://console.typesafe.ai/keys
 ```
 
-Or from a clone: `git clone … && cd jev-arena && npm install && npm start`.
+Or from a clone: `git clone https://github.com/Eliot5566/jev-arena && cd jev-arena && npm install && npm start`.
 
 > **Cost check (measured).** A decision is about 1,400 input tokens. Jev charges $0.042 per million input tokens and nothing for output, so one decision costs about $0.00006. Both fighters decide ~3.7 times a second at a 230 ms median latency, so a fight that goes the full 60 seconds costs **2–3 cents**, and the whole 30-fight ladder in [`ladder/`](ladder/LEADERBOARD.md) cost **$0.49**.
 

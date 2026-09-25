@@ -1,0 +1,8 @@
+name: Zen
+author: jev-arena
+tagline: One sentence. No reflexes. How far does that go?
+color: "#e2e8f0"
+strategy: >
+  Win the fight. Do whatever a wise, calm fighter would do in this exact moment.
+fallback: strafe_left
+min_confidence: 0

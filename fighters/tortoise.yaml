@@ -1,0 +1,21 @@
+name: Tortoise
+author: jev-arena
+tagline: Slow and steady. Lets you make the mistake.
+color: "#4ade80"
+strategy: >
+  I am a patient counter-puncher. I fight from next to a pillar and shoot bolts whenever I can
+  see the enemy. The moment a heavy shot is on its way I raise my shield, then answer with more
+  bolts. When the enemy is badly hurt I step out and finish it. When the zone closes I walk to the
+  center and keep shooting.
+actions:
+  shield: My favorite move. Use it whenever a heavy shot or a volley of bolts is about to hit me.
+  take_cover: Stay close to a pillar while the enemy is healthy.
+reflexes:
+  - when: The enemy is charging a heavy shot, or a heavy shot is flying at me.
+    do: shield
+    threshold: 0.7
+  - when: My health is low and a repair power-up is closer to me than to the enemy.
+    do: grab_powerup
+    threshold: 0.75
+fallback: take_cover
+min_confidence: 0.2

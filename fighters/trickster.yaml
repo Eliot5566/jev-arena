@@ -1,0 +1,20 @@
+name: Trickster
+author: jev-arena
+tagline: Now you see me.
+color: "#fbbf24"
+strategy: >
+  I am slippery. I circle the enemy and dodge everything. I bait heavy shots by standing in the
+  open, then dash away at the last moment. Right after the enemy wastes energy on a shot, I punish
+  with melee if they are close or bolts if they are not. I love stealing power-ups from under their nose.
+actions:
+  dash: Dodge incoming heavy shots at the last moment.
+  grab_powerup: Steal power-ups, especially overdrive.
+reflexes:
+  - when: A heavy shot or several bolts are about to hit me in the next half second.
+    do: dash
+    threshold: 0.65
+  - when: A power-up is closer to me than to the enemy.
+    do: grab_powerup
+    threshold: 0.8
+fallback: strafe_left
+min_confidence: 0.2

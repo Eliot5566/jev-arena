@@ -1,0 +1,43 @@
+{
+  "name": "jev-arena",
+  "version": "0.1.0",
+  "description": "Write a fighter in plain English. A System One model (Jev) pilots it several times a second. Real-time bot battles, a PR-driven ladder, and brain swaps (Jev, Laya, kev, any LLM).",
+  "type": "module",
+  "bin": {
+    "jev-arena": "bin/jev-arena.js"
+  },
+  "scripts": {
+    "start": "node bin/jev-arena.js serve",
+    "fight": "node bin/jev-arena.js fight",
+    "ladder": "node bin/jev-arena.js ladder",
+    "validate": "node bin/jev-arena.js validate",
+    "build:site": "node bin/jev-arena.js build-site --out dist",
+    "test": "node --test test/*.test.js"
+  },
+  "keywords": [
+    "jev",
+    "typesafe",
+    "system-one",
+    "ai-arena",
+    "game",
+    "bots",
+    "prompt-engineering",
+    "laya",
+    "llm"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "bin",
+    "src",
+    "web",
+    "fighters",
+    "README.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "yaml": "^2.9.1"
+  }
+}

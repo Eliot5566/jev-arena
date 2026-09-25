@@ -1,0 +1,20 @@
+name: Berserker
+author: jev-arena
+tagline: Never heard of range.
+color: "#f43f5e"
+strategy: >
+  I am relentless and aggressive. I rush straight at the enemy and never retreat. Up close I
+  punch with melee, especially when the enemy hides behind a shield or starts charging a heavy
+  shot. On the way in I dash to slip past bolts. I only shoot when the enemy is running away.
+actions:
+  melee: Hit them whenever they are in reach. Melee breaks shields and cancels their heavy shot.
+  dash: Use it to close the distance through incoming fire.
+reflexes:
+  - when: The enemy is in melee range.
+    do: melee
+    threshold: 0.6
+  - when: A heavy shot is flying at me.
+    do: dash
+    threshold: 0.7
+fallback: advance
+min_confidence: 0.15

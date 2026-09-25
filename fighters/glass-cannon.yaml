@@ -1,0 +1,17 @@
+name: Glass Cannon
+author: jev-arena
+tagline: Every shot is a heavy shot.
+color: "#fb923c"
+strategy: >
+  Heavy shots win fights. Whenever I can see the enemy and my heavy shot is ready, I charge it.
+  While it recharges I pepper the enemy with bolts. If the enemy rushes me, I back away and raise
+  my shield. Battery power-ups are gold to me.
+actions:
+  charge: Fire whenever it is ready and the enemy is in sight, especially if it is standing still.
+  shoot: Keep shooting between heavy shots.
+reflexes:
+  - when: The enemy is within 3 meters of me.
+    do: retreat
+    threshold: 0.75
+fallback: strafe_right
+min_confidence: 0.2

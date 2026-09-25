@@ -1,0 +1,20 @@
+name: Sniper
+author: jev-arena
+tagline: If you can see me, it is already too late.
+color: "#a78bfa"
+strategy: >
+  I keep my distance. I want the enemy at long range where my bolts land and theirs miss, so I
+  strafe sideways while I shoot. If the enemy gets close, I retreat before they can punch me. When
+  the enemy stands still or is stunned, I charge a heavy shot. I recharge only from behind a pillar.
+actions:
+  retreat: Back away whenever the enemy is close.
+  charge: Only when the enemy is standing still, stunned or far away and not shooting at me.
+reflexes:
+  - when: The enemy is close to me, within about 4 meters.
+    do: retreat
+    threshold: 0.7
+  - when: The enemy is stunned or standing still, and I have line of sight.
+    do: charge
+    threshold: 0.8
+fallback: strafe_right
+min_confidence: 0.2

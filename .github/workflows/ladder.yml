@@ -1,0 +1,70 @@
+name: Ladder and site
+
+# Runs the round robin whenever fighters change on main, monthly, or by hand, then publishes the
+# arena (with every replay) to GitHub Pages.
+# Add a TYPESAFE_API_KEY repository secret to let Jev play. Without it the ladder uses the
+# offline mock brain so the site still has something to show.
+
+on:
+  push:
+    branches: [main]
+    paths: ['fighters/**', 'src/**', 'web/**', '.github/workflows/ladder.yml']
+  schedule:
+    - cron: '0 6 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: ladder
+  cancel-in-progress: false
+
+jobs:
+  ladder:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Run the ladder
+        env:
+          TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
+          # Pushes only re-run the ladder when fighters, brain or engine changed; the monthly and
+          # manual runs always play fresh fights.
+          ONLY_IF_CHANGED: ${{ github.event_name == 'push' && '--if-changed' || '' }}
+        run: |
+          if [ -n "$TYPESAFE_API_KEY" ]; then
+            node bin/jev-arena.js ladder --brain jev --mode realtime --concurrency 2 $ONLY_IF_CHANGED
+          else
+            echo "::notice::No TYPESAFE_API_KEY secret, running the ladder with the offline mock brain."
+            node bin/jev-arena.js ladder --brain mock --mode lockstep --concurrency 4 $ONLY_IF_CHANGED
+          fi
+      - name: Commit ladder results
+        run: |
+          git config user.name "jev-arena-bot"
+          git config user.email "jev-arena-bot@users.noreply.github.com"
+          git add ladder
+          git diff --cached --quiet || git commit -m "ladder: update results"
+          git push
+      - name: Build static site
+        run: node bin/jev-arena.js build-site --out dist
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: ladder
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

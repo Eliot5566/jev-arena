@@ -2,6 +2,8 @@
 
 # ⚔ Jev Arena
 
+[![npm](https://img.shields.io/npm/v/jev-arena?color=c6f432&label=npm)](https://www.npmjs.com/package/jev-arena) [![ladder](https://github.com/Eliot5566/jev-arena/actions/workflows/ladder.yml/badge.svg)](https://github.com/Eliot5566/jev-arena/actions/workflows/ladder.yml) [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
 **用白話英文寫一個格鬥機器人，讓 System One 模型每秒幫它做好幾次決定。**
 
 即時對戰 · 用 Pull Request 加入天梯 · 大腦可以換：Jev、Laya、kev，或任何 LLM

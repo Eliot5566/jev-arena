@@ -6,7 +6,7 @@
 - **Style in one line:**
 - [ ] One file, `fighters/<your-github-handle>.yaml`
 - [ ] `author` is my GitHub handle
-- [ ] `npx jev-arena validate fighters/<file>.yaml` passes
+- [ ] `npx jev-arena smoke fighters/<file>.yaml` passes (validates the file and fights the field offline)
 - [ ] I tested it in the Fighter Lab or with `jev-arena fight`
 
-Once merged, the ladder workflow puts it through the round robin and the site updates with its replays.
+CI posts the same smoke test on the check's summary page. Once merged, the ladder workflow plays it against the field with Jev and the site updates with its replays. [PR #2](https://github.com/Eliot5566/jev-arena/pull/2) is a worked example.

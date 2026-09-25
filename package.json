@@ -1,6 +1,6 @@
 {
   "name": "jev-arena",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Write a fighter in plain English. A System One model (Jev) pilots it several times a second. Real-time bot battles, a PR-driven ladder, and brain swaps (Jev, Laya, kev, any LLM).",
   "author": "Eliot5566",
   "homepage": "https://eliot5566.github.io/jev-arena/",
@@ -32,7 +32,10 @@
     "bots",
     "prompt-engineering",
     "laya",
-    "llm"
+    "llm",
+    "obs",
+    "streaming",
+    "i18n"
   ],
   "license": "MIT",
   "engines": {
@@ -44,6 +47,8 @@
     "web",
     "fighters",
     "ladder",
+    "seasons",
+    "highlights",
     "README.md",
     "README.zh-TW.md",
     "LICENSE"

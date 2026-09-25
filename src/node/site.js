@@ -4,13 +4,13 @@ import { loadFighters } from './fighters.js';
 import { ROOT } from './server.js';
 
 // Build a fully static copy of the arena (for GitHub Pages or any static host).
-// Visitors can watch every ladder replay and run live fights with the offline mock brain.
-// Anyone with a TypeSafe key can also paste it to fight with Jev straight from the browser
-// (the key stays in the tab), provided the API allows browser requests.
+// Visitors can watch every ladder and season replay, run live fights with the offline mock brain,
+// and open the broadcast overlay. Jev itself needs the local server: the TypeSafe API doesn't
+// accept requests from other websites, so a static page can't call it.
 
-const BROWSER_SRC = ['engine', 'brains/mock.js', 'brains/systemone.js', 'protocol.js', 'fighter.js', 'match.js', 'replay.js'];
+const BROWSER_SRC = ['engine', 'brains/mock.js', 'protocol.js', 'fighter.js', 'match.js', 'replay.js'];
 
-export function buildSite({ out, fightersDir = path.join(ROOT, 'fighters'), ladderDir = path.join(ROOT, 'ladder') }) {
+export function buildSite({ out, fightersDir = path.join(ROOT, 'fighters'), ladderDir = path.join(ROOT, 'ladder'), seasonsDir = path.join(ROOT, 'seasons') }) {
   fs.rmSync(out, { recursive: true, force: true });
   fs.mkdirSync(path.join(out, 'data'), { recursive: true });
 
@@ -19,6 +19,12 @@ export function buildSite({ out, fightersDir = path.join(ROOT, 'fighters'), ladd
   for (const rel of BROWSER_SRC) copy(path.join(ROOT, 'src', rel), path.join(out, 'src', rel));
   copy(fightersDir, path.join(out, 'fighters'));
   if (fs.existsSync(ladderDir)) copy(ladderDir, path.join(out, 'ladder'));
+  if (fs.existsSync(seasonsDir)) copy(seasonsDir, path.join(out, 'seasons'));
+  copy(path.join(ROOT, 'highlights'), path.join(out, 'highlights'));
+  if (!fs.existsSync(path.join(out, 'seasons', 'index.json'))) {
+    fs.mkdirSync(path.join(out, 'seasons'), { recursive: true });
+    fs.writeFileSync(path.join(out, 'seasons', 'index.json'), JSON.stringify({ seasons: [] }));
+  }
 
   const list = loadFighters(fightersDir);
   fs.writeFileSync(path.join(out, 'data', 'fighters.json'), JSON.stringify({ fighters: list.filter((r) => r.ok).map((r) => r.fighter), invalid: [] }));
@@ -30,7 +36,6 @@ export function buildSite({ out, fightersDir = path.join(ROOT, 'fighters'), ladd
       brains: [
         { id: 'mock', label: 'Mock (offline heuristics)', kind: 'mock', ready: true },
         { id: 'mock-slow', label: 'Mock (slow, simulates a 1.5s LLM)', kind: 'mock', ready: true },
-        { id: 'jev-direct', label: 'Jev · your key, from this tab', kind: 'systemone', ready: true, needsKey: true },
       ],
     }),
   );

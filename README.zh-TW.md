@@ -103,14 +103,27 @@ TYPESAFE_API_KEY=ts-... npx jev-arena     # 金鑰在 https://console.typesafe.a
 
 ## 加入天梯
 
-1. 在 **Fighter Lab** 分頁設計機器人：改英文、按 **TEST FIGHT**，反覆調整。
-2. 按 **Copy YAML**，存成 `fighters/<你的 GitHub 帳號>.yaml`。
-3. 開一個 Pull Request。CI 會驗證格式，並讓它和所有對手用 mock 大腦各打一場確認能跑。
-4. 合併後，[天梯 workflow](.github/workflows/ladder.yml) 會用 repo 的 `TYPESAFE_API_KEY` 讓 Jev 跑完循環賽，更新 [`ladder/LEADERBOARD.md`](ladder/LEADERBOARD.md)，並把所有重播發布到網站。
+1. 在**機器人工作室**分頁設計機器人：改英文戰術、按**試打**，反覆調整。
+2. 按**複製 YAML**，存成 `fighters/<你的 GitHub 帳號>.yaml`。
+3. 先在本機檢查：`npx jev-arena smoke fighters/<你的 GitHub 帳號>.yaml` 會驗證格式，並用離線大腦和天梯上每個機器人各打兩場。
+4. 開一個 Pull Request。CI 會跑同樣的試打，結果表格顯示在檢查的摘要頁。可以參考範例 [PR #2](https://github.com/Eliot5566/jev-arena/pull/2)。
+5. 合併後，[天梯 workflow](.github/workflows/ladder.yml) 會用 repo 的 `TYPESAFE_API_KEY` 讓 Jev 重跑天梯，更新 [`ladder/LEADERBOARD.md`](ladder/LEADERBOARD.md)，並把所有重播發布到網站。16 個機器人以內打完整循環賽，超過就自動改用瑞士制。
 
 參賽者不需要自己的 TypeSafe 金鑰，天梯用的是 repo 的大腦。
 
 **公平規則**：戰術 ≤ 700 字元、反射 ≤ 4 條、招式備註 ≤ 160 字元。每個人的提示預算都一樣，天梯用同一個大腦。
+
+## 名人堂
+
+<!-- hall-of-fame:start -->
+Season 1 進行中，報名到 **10 月 18 日**，賽季結束後冠軍會出現在這裡。[規則與截止日](https://github.com/Eliot5566/jev-arena/issues/1)
+<!-- hall-of-fame:end -->
+
+## 分享與直播
+
+- **分享一場對戰**：每個重播都有**複製連結**按鈕。先暫停再複製，連結就會從那一秒開始播放（`&t=22`）。例如：[Trickster 搶下三顆超頻，落後 26 滴血逆轉](https://eliot5566.github.io/jev-arena/?replay=highlights/glass-cannon-vs-trickster.json)。
+- **直播天梯**：[`?overlay=1&playlist=ladder`](https://eliot5566.github.io/jev-arena/?overlay=1&playlist=ladder&lang=zh-TW) 是 1920×1080 的直播畫面，會輪播所有天梯對戰，並根據模型的機率自動產生解說（例如「Trickster 有 94% 把握：道具離我比較近」）。在 OBS 加一個瀏覽器來源貼上網址即可。可加的參數：`&shuffle=1`、`&speed=2`、`&lang=zh-TW`、`&bg=transparent`，或用 `&replay=…` 只播一場。在本機用 `npx jev-arena` 並設定金鑰時，`?overlay=1&red=zen&blue=trickster&brain=jev` 會直播真正的 Jev 對戰，每打完一場自動換一組對手。
+- **中文介面**：網站會依瀏覽器語言自動切換成繁體中文，也可以按右上角的「中文／EN」按鈕切換。
 
 ## 寫機器人的訣竅
 

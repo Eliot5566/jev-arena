@@ -28,6 +28,8 @@ const STATIC = [
   ['/src/', 'src'],
   ['/fighters/', 'fighters'],
   ['/ladder/', 'ladder'],
+  ['/seasons/', 'seasons'],
+  ['/highlights/', 'highlights'],
 ];
 
 export function startServer({ port = 5173, host = '127.0.0.1', fightersDir = path.join(ROOT, 'fighters'), env = process.env } = {}) {
@@ -49,6 +51,7 @@ export function startServer({ port = 5173, host = '127.0.0.1', fightersDir = pat
           brains: discoverBrains(env).concat([{ id: 'mock-slow', label: 'Mock (slow, simulates a 1.5s LLM)', kind: 'mock', ready: true }]),
         });
       }
+      if (p === '/seasons/index.json' && !fs.existsSync(path.join(ROOT, 'seasons', 'index.json'))) return sendJson(res, 200, { seasons: [] });
       if (p === '/data/fighters.json') {
         const list = loadFighters(fightersDir);
         return sendJson(res, 200, {

@@ -1,14 +1,15 @@
 import * as C from '../src/engine/constants.js';
 import { zoneAt } from '../src/engine/world.js';
+import { t, moveLabel } from './i18n.js';
 
 // Canvas renderer. The simulation ticks at 20 Hz; this draws at display rate and interpolates
 // between the last two snapshots so motion stays smooth.
 
 const TAU = Math.PI * 2;
 const POWERUP_STYLE = {
-  repair: { color: '#4ade80', glyph: '+', label: '+30 REPAIR' },
-  battery: { color: '#ffd166', glyph: 'ϟ', label: '+60 ENERGY' },
-  overdrive: { color: '#f472b6', glyph: '★', label: 'OVERDRIVE!' },
+  repair: { color: '#4ade80', glyph: '+', label: 'fx.repair' },
+  battery: { color: '#ffd166', glyph: 'ϟ', label: 'fx.battery' },
+  overdrive: { color: '#f472b6', glyph: '★', label: 'fx.overdrive' },
 };
 
 export class ArenaRenderer {
@@ -71,7 +72,7 @@ export class ArenaRenderer {
 
   showDecision(side, action, source, now) {
     this.labels[side] = {
-      text: action.replace('_', ' ').toUpperCase(),
+      text: moveLabel(action).toUpperCase(),
       reflex: source.startsWith('reflex'),
       fallback: source.startsWith('fallback'),
       t0: now,
@@ -97,13 +98,13 @@ export class ArenaRenderer {
         break;
       }
       case 'blocked':
-        this.text(e.x, e.y - 1.4, 'BLOCKED', '#7dd3fc', 13, now);
+        this.text(e.x, e.y - 1.4, t('fx.blocked'), '#7dd3fc', 13, now);
         break;
       case 'dodge':
-        this.text(e.x, e.y - 1.4, 'DODGE', '#c6ff3d', 13, now);
+        this.text(e.x, e.y - 1.4, t('fx.dodge'), '#c6ff3d', 13, now);
         break;
       case 'guard_break':
-        this.text(e.x, e.y - 1.6, 'GUARD BREAK!', '#ffd166', 17, now);
+        this.text(e.x, e.y - 1.6, t('fx.guardBreak'), '#ffd166', 17, now);
         this.shake = Math.max(this.shake, 7);
         break;
       case 'impact':
@@ -112,14 +113,14 @@ export class ArenaRenderer {
       case 'pickup': {
         const st = POWERUP_STYLE[e.kind];
         this.ring(e.x, e.y, st.color, now);
-        this.text(e.x, e.y - 1.2, st.label, st.color, 15, now);
+        this.text(e.x, e.y - 1.2, t(st.label), st.color, 15, now);
         break;
       }
       case 'powerup_spawn':
         this.ring(e.x, e.y, POWERUP_STYLE[e.kind].color, now);
         break;
       case 'charge_cancel':
-        this.text(e.x, e.y - 1.4, 'CANCELLED', '#94a3b8', 12, now);
+        this.text(e.x, e.y - 1.4, t('fx.cancelled'), '#94a3b8', 12, now);
         break;
       case 'zone_burn':
         this.burst(e.x, e.y, '#ff4d6d', 4, 1.5, 0.4);
@@ -128,7 +129,7 @@ export class ArenaRenderer {
         this.shake = Math.max(this.shake, 4);
         break;
       case 'whiff':
-        this.text(e.x, e.y - 1.4, 'WHIFF', '#94a3b8', 12, now);
+        this.text(e.x, e.y - 1.4, t('fx.whiff'), '#94a3b8', 12, now);
         break;
       case 'ko': {
         if (e.side >= 0 && this.cur) {

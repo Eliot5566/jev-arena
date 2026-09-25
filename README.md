@@ -124,12 +124,25 @@ npx jev-arena fight sniper trickster --brain http://localhost:8000/v1/systemone 
 
 1. Design your fighter in the **Fighter Lab** tab: edit the English, press **TEST FIGHT**, repeat.
 2. Press **Copy YAML** and save it as `fighters/<your-github-handle>.yaml`.
-3. Open a pull request. CI validates it and smoke-fights it against the field.
-4. When it's merged, the [ladder workflow](.github/workflows/ladder.yml) runs the round robin (with Jev, using the repo's `TYPESAFE_API_KEY` secret), commits [`ladder/LEADERBOARD.md`](ladder/LEADERBOARD.md), and republishes the site with every replay.
+3. Check it locally: `npx jev-arena smoke fighters/<your-github-handle>.yaml` validates the file and fights it against every fighter on the ladder with the offline brain.
+4. Open a pull request. CI runs the same smoke test and posts the results table on the check's summary page. [PR #2](https://github.com/Eliot5566/jev-arena/pull/2) is a worked example you can copy.
+5. When it's merged, the [ladder workflow](.github/workflows/ladder.yml) re-runs the ladder with Jev (using the repo's `TYPESAFE_API_KEY` secret), commits [`ladder/LEADERBOARD.md`](ladder/LEADERBOARD.md), and republishes the site with every replay. Up to 16 fighters play a full round robin; bigger fields switch to a Swiss system automatically.
 
 You don't need a TypeSafe key to compete. The ladder's brain is the repo's.
 
 **Fair-play limits:** strategy ≤ 700 characters, ≤ 4 reflexes, action notes ≤ 160 characters. Everybody gets the same prompt budget, and the ladder brain is the same for every fighter.
+
+## Hall of Fame
+
+<!-- hall-of-fame:start -->
+Season 1 is running until **October 18**. The champion lands here when it closes. [Rules and deadline](https://github.com/Eliot5566/jev-arena/issues/1).
+<!-- hall-of-fame:end -->
+
+## Share it, stream it
+
+- **Share a fight.** Every replay has a **Copy link** button. Pause first to share a moment: the link then opens at that second (`&t=22`). Example: [Trickster steals three overdrives and comes back from 26 HP down](https://eliot5566.github.io/jev-arena/?replay=highlights/glass-cannon-vs-trickster.json).
+- **Stream the ladder.** [`?overlay=1&playlist=ladder`](https://eliot5566.github.io/jev-arena/?overlay=1&playlist=ladder) is a 1920×1080 broadcast view that loops through every ladder fight with live commentary drawn from the model's probabilities ("Trickster is 94% sure a power-up is closer to it…"). Add it to OBS as a browser source. Options: `&shuffle=1`, `&speed=2`, `&lang=zh-TW`, `&bg=transparent`, or a single fight with `&replay=…`. With `npx jev-arena` and a key, `?overlay=1&red=zen&blue=trickster&brain=jev` streams live Jev fights, starting a new random pairing after each one.
+- **中文介面.** The arena speaks Traditional Chinese: it follows your browser language, or use the 中文 button in the header.
 
 ## Tips for writing fighters
 
@@ -149,8 +162,11 @@ You don't need a TypeSafe key to compete. The ladder's brain is the repo's.
 ```text
 jev-arena [serve]                       open the arena in your browser (default)
 jev-arena fight <red> <blue> [options]  run one fight in the terminal
-jev-arena ladder [options]              round-robin every fighter, write ladder/
+jev-arena ladder [options]              play the ladder (round robin, Swiss above 16 fighters), write ladder/
 jev-arena validate [files...]           check fighter files
+jev-arena smoke <file> [--markdown]     validate one fighter and fight it against the field (offline brain)
+jev-arena season archive <id>           freeze ladder/ into seasons/<id>/ and update the Hall of Fame
+jev-arena season list                   list archived seasons
 jev-arena brains                        list the brains this machine can use
 jev-arena build-site [--out dist]       build the static site for GitHub Pages
 jev-arena verify <replay.json>          re-simulate a replay and check the result
@@ -158,6 +174,7 @@ jev-arena verify <replay.json>          re-simulate a replay and check the resul
 --brain <id>   mock | jev | llm:<model> | <System One URL>      --red / --blue  per-side brains
 --mode <m>     realtime | lockstep      --seed <n>      --out <file|dir>
 --games <n>    ladder games per pair    --concurrency <n>      --dry-run (ladder cost estimate)
+--format <f>   auto | roundrobin | swiss   --rounds <n> (Swiss)  --name <text> (season archive)
 ```
 </details>
 

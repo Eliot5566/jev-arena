@@ -17,11 +17,80 @@ export function pairings(fighters, games = 2) {
   return out;
 }
 
-export function estimate(fighters, games, decisionsPerSecond = 4, tokensPerDecision = 900) {
-  const matches = pairings(fighters, games).length;
-  const calls = matches * 2 * decisionsPerSecond * MATCH_SECONDS;
+// Defaults come from the first real Jev ladder: ~3.7 decisions/s per fighter, ~1,400 input
+// tokens per decision, and fights that last ~36 s on average (most end in a KO).
+export function estimate(fighters, games, { format = 'roundrobin', rounds = null, decisionsPerSecond = 3.7, tokensPerDecision = 1400, avgSeconds = 40 } = {}) {
+  const n = fighters.length;
+  const matches = format === 'swiss' ? (rounds ?? swissRoundsFor(n)) * Math.floor(n / 2) * games : pairings(fighters, games).length;
+  const calls = Math.round(matches * 2 * decisionsPerSecond * Math.min(avgSeconds, MATCH_SECONDS));
   const tokens = calls * tokensPerDecision;
   return { matches, calls, tokens, usd: (tokens / 1e6) * JEV_USD_PER_MILLION_INPUT };
+}
+
+// ---------------------------------------------------------------------------------------------
+// Swiss system, for fields too big to play everyone against everyone. Each round pairs fighters
+// with similar scores who haven't met yet; every pairing still plays `games` fights, sides swapped.
+
+export const AUTO_SWISS_ABOVE = 16;
+
+export function chooseFormat(format, n) {
+  if (format === 'swiss' || format === 'roundrobin') return format;
+  return n > AUTO_SWISS_ABOVE ? 'swiss' : 'roundrobin';
+}
+
+export function swissRoundsFor(n) {
+  return Math.max(1, Math.min(n - 1, Math.ceil(Math.log2(Math.max(2, n))) + 2));
+}
+
+export const pairKey = (a, b) => (a < b ? `${a}|${b}` : `${b}|${a}`);
+
+// points: Map id -> score so far. played: Set of pairKey. byes: Set of ids that already sat out.
+export function swissPairRound(ids, points, played, byes) {
+  const order = [...ids].sort((x, y) => (points.get(y) || 0) - (points.get(x) || 0) || x.localeCompare(y));
+  let bye = null;
+  if (order.length % 2) {
+    bye = [...order].reverse().find((id) => !byes.has(id)) ?? order[order.length - 1];
+    order.splice(order.indexOf(bye), 1);
+  }
+  let budget = 20000;
+  const search = (list) => {
+    if (!list.length) return [];
+    if (--budget < 0) return null;
+    const [first, ...rest] = list;
+    for (let k = 0; k < rest.length; k++) {
+      if (played.has(pairKey(first, rest[k]))) continue;
+      const sub = search(rest.filter((_, i) => i !== k));
+      if (sub) return [[first, rest[k]], ...sub];
+    }
+    return null;
+  };
+  let pairs = search(order);
+  if (!pairs) {
+    // Everyone left has met: allow rematches, still pairing neighbours in the standings.
+    pairs = [];
+    for (let i = 0; i + 1 < order.length; i += 2) pairs.push([order[i], order[i + 1]]);
+  }
+  return { pairs, bye };
+}
+
+// The fights for one Swiss round. Seeds depend only on the pair (as in the round robin), plus
+// the round number for a rematch so it gets fresh maps.
+export function swissMatches(pairs, games, round, played) {
+  const out = [];
+  for (const [x, y] of pairs) {
+    const [lo, hi] = x < y ? [x, y] : [y, x];
+    const rematch = played.has(pairKey(lo, hi));
+    for (let g = 0; g < games; g++) {
+      const [a, b] = g % 2 === 0 ? [lo, hi] : [hi, lo];
+      const suffix = rematch ? `__r${round}` : '';
+      out.push({ key: `${lo}__${hi}__g${g + 1}${suffix}`, a, b, round, seed: hashSeed(`${lo}|${hi}|${g}${rematch ? `|r${round}` : ''}`) });
+    }
+  }
+  return out;
+}
+
+export function scoreOf(result) {
+  return result.winner === null ? [0.5, 0.5] : result.winner === 0 ? [1, 0] : [0, 1];
 }
 
 export function sumCost(summary) {
@@ -76,10 +145,11 @@ export function buildTable(fighters, results) {
 }
 
 export function toMarkdown(board) {
+  const format = board.format === 'swiss' ? ` · Swiss, ${board.rounds} rounds` : '';
   const lines = [
     '# Jev Arena ladder',
     '',
-    `Brain: \`${board.brain}\` · mode: ${board.mode} · ${board.gamesPerPair} games per pair · updated ${board.generatedAt.slice(0, 16).replace('T', ' ')} UTC` +
+    `Brain: \`${board.brain}\` · mode: ${board.mode}${format} · ${board.gamesPerPair} games per pair · updated ${board.generatedAt.slice(0, 16).replace('T', ' ')} UTC` +
       (board.totalCostUsd ? ` · whole ladder cost $${board.totalCostUsd}` : ''),
     '',
     ...(String(board.brain).startsWith('mock') || board.brain === 'instant'
@@ -97,15 +167,29 @@ export function toMarkdown(board) {
   return lines.join('\n');
 }
 
-export function makeBoard({ fighters, results, brainId, mode, games }) {
+export function makeBoard({ fighters, results, brainId, mode, games, format = 'roundrobin', rounds = null, byes = null }) {
   const table = buildTable(fighters, results);
+  if (format === 'swiss') {
+    const pts = Object.fromEntries(fighters.map((f) => [f.id, (byes?.[f.id] || 0) * games]));
+    for (const r of results) {
+      const [sa, sb] = scoreOf(r.result);
+      pts[r.a] += sa;
+      pts[r.b] += sb;
+    }
+    for (const row of table) {
+      row.points = pts[row.id];
+      row.byes = byes?.[row.id] || 0;
+    }
+  }
   return {
     generatedAt: new Date().toISOString(),
     brain: brainId,
     mode,
     gamesPerPair: games,
+    ...(format === 'swiss' ? { format, rounds } : {}),
     fighters: table,
     matches: results.map((r) => ({
+      ...(r.round ? { round: r.round } : {}),
       key: r.key,
       a: r.a,
       b: r.b,

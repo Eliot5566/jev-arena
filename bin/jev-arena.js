@@ -5,7 +5,9 @@ import path from 'node:path';
 import { startServer, ROOT } from '../src/node/server.js';
 import { loadFighters, loadFighterFile, resolveFighter } from '../src/node/fighters.js';
 import { createBrain, discoverBrains } from '../src/node/brains.js';
-import { runLadder, estimate, ladderIsCurrent } from '../src/node/ladder.js';
+import { runLadder, estimate, ladderIsCurrent, chooseFormat, swissRoundsFor } from '../src/node/ladder.js';
+import { runSmoke, smokeMarkdown, smokeText } from '../src/node/smoke.js';
+import { archiveSeason, readSeasonIndex } from '../src/node/season.js';
 import { buildSite } from '../src/node/site.js';
 import { Match } from '../src/match.js';
 import { verifyReplay } from '../src/replay.js';
@@ -17,8 +19,11 @@ jev-arena · write a fighter in plain English, let a System One model pilot it
 Usage
   jev-arena [serve]                       open the arena in your browser (default)
   jev-arena fight <red> <blue> [options]  run one fight in the terminal
-  jev-arena ladder [options]              round-robin every fighter, write ladder/
+  jev-arena ladder [options]              play the ladder (round robin, or Swiss for big fields), write ladder/
   jev-arena validate [files...]           check fighter files (default: fighters/*.yaml)
+  jev-arena smoke <file> [--markdown]     validate one fighter and test it against the field (offline brain)
+  jev-arena season archive <id>           freeze ladder/ into seasons/<id>/ and update the Hall of Fame
+  jev-arena season list                   show archived seasons
   jev-arena brains                        list the brains this machine can use
   jev-arena build-site [--out dist]       build the static site for GitHub Pages
   jev-arena verify <replay.json>          re-simulate a replay and check the result
@@ -32,6 +37,9 @@ Fight / ladder options
   --games <n>         games per pair in the ladder (default 2)
   --concurrency <n>   parallel ladder matches (default 2)
   --dry-run           ladder: print the cost estimate and exit
+  --format <f>        ladder: auto (default: Swiss above 16 fighters) | roundrobin | swiss
+  --rounds <n>        ladder: Swiss rounds (default: log2(fighters) + 2)
+  --name <text>       season archive: display name (default "Season <id>")
   --if-changed        ladder: skip if fighters, brain and engine match the committed ladder
   --force             ladder: let an offline brain (mock) replace results played by a real model
   --port <n>          serve: port (default 5173)
@@ -61,6 +69,10 @@ const { values: opt, positionals } = parseArgs({
     fighters: { type: 'string', default: path.join(ROOT, 'fighters') },
     'dry-run': { type: 'boolean', default: false },
     'if-changed': { type: 'boolean', default: false },
+    format: { type: 'string', default: 'auto' },
+    rounds: { type: 'string' },
+    name: { type: 'string' },
+    markdown: { type: 'boolean', default: false },
     force: { type: 'boolean', default: false },
     quiet: { type: 'boolean', default: false },
     help: { type: 'boolean', short: 'h', default: false },
@@ -91,6 +103,10 @@ async function main() {
       return site();
     case 'verify':
       return verify();
+    case 'smoke':
+      return smoke();
+    case 'season':
+      return season();
     default:
       console.log(HELP);
       process.exit(1);
@@ -190,13 +206,17 @@ async function ladder() {
   if (fighters.length < 2) throw new Error('need at least two valid fighters');
   const games = Number(opt.games);
   const brainId = defaultBrain();
-  const est = estimate(fighters, games);
-  console.log(`\n  ${fighters.length} fighters · ${est.matches} matches · brain ${brainId}`);
-  if (brainId === 'jev') console.log(`  estimated Jev cost: ~$${est.usd.toFixed(3)} (${(est.tokens / 1e6).toFixed(1)}M input tokens)`);
+  if (!['auto', 'roundrobin', 'swiss'].includes(opt.format)) throw new Error('--format must be auto, roundrobin or swiss');
+  const format = chooseFormat(opt.format, fighters.length);
+  const rounds = format === 'swiss' ? (opt.rounds ? Number(opt.rounds) : swissRoundsFor(fighters.length)) : null;
+  const est = estimate(fighters, games, { format, rounds });
+  const how = format === 'swiss' ? `Swiss, ${rounds} rounds` : 'round robin';
+  console.log(`\n  ${fighters.length} fighters · ${how} · ${est.matches} matches · brain ${brainId}`);
+  if (brainId === 'jev') console.log(`  estimated Jev cost: ~$${est.usd.toFixed(2)} (${(est.tokens / 1e6).toFixed(1)}M input tokens, ~${Math.ceil((est.matches * 40) / Number(opt.concurrency) / 60)} min at concurrency ${opt.concurrency})`);
   if (opt['dry-run']) return;
   const outDir = path.resolve(opt.out || path.join(ROOT, 'ladder'));
   const mode = opt.mode === 'lockstep' ? 'lockstep' : 'realtime';
-  if (opt['if-changed'] && ladderIsCurrent({ fighters, brainId, mode, games, outDir })) {
+  if (opt['if-changed'] && ladderIsCurrent({ fighters, brainId, mode, games, outDir, format, rounds })) {
     console.log('  ladder is already up to date for these fighters, brain and engine; nothing to run.\n');
     return;
   }
@@ -213,6 +233,9 @@ async function ladder() {
     games,
     concurrency: Number(opt.concurrency),
     outDir,
+    format,
+    rounds,
+    onRound: (r, n, pairs, bye) => console.log(`\n  round ${r}/${n}: ${pairs.length} pairings${bye ? ` · bye: ${bye}` : ''}`),
     onMatch: (m, i, n) => {
       const w = m.result.winner === null ? 'draw' : m.result.winner === 0 ? m.a : m.b;
       console.log(`  [${String(i).padStart(3)}/${n}] ${m.a} vs ${m.b} → ${w} (${m.result.reason})`);
@@ -266,4 +289,40 @@ function verify() {
   const v = verifyReplay(replay);
   console.log(v.ok ? '  ✔ replay re-simulates to the recorded result' : `  ✖ mismatch\n    recorded: ${JSON.stringify(v.want)}\n    re-sim:   ${JSON.stringify(v.got)}`);
   if (!v.ok) process.exit(1);
+}
+
+async function smoke() {
+  if (!positionals[0]) throw new Error('usage: jev-arena smoke fighters/<you>.yaml [--markdown]');
+  let failed = false;
+  for (const file of positionals) {
+    const report = await runSmoke({ file, fightersDir: path.resolve(opt.fighters), brainId: opt.brain || 'instant', games: Number(opt.games), mode: 'lockstep' });
+    process.stdout.write(opt.markdown ? smokeMarkdown(report) + '\n' : smokeText(report));
+    if (!report.ok) failed = true;
+  }
+  if (failed) process.exit(1);
+}
+
+async function season() {
+  const sub = positionals[0];
+  const seasonsDir = path.join(ROOT, 'seasons');
+  if (sub === 'list') {
+    const idx = readSeasonIndex(seasonsDir);
+    if (!idx.seasons.length) return console.log('\n  no archived seasons yet\n');
+    for (const s of idx.seasons) console.log(`  ${s.id.padEnd(8)} ${s.name.padEnd(18)} champion ${s.champion.name} (@${s.champion.author}) · ${s.fighters} fighters · closed ${s.closedAt.slice(0, 10)}`);
+    return;
+  }
+  if (sub !== 'archive' || !positionals[1]) throw new Error('usage: jev-arena season archive <id> [--name "Season 1"] [--force]   |   jev-arena season list');
+  const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8'));
+  const { entry, updated } = archiveSeason({
+    id: positionals[1],
+    name: opt.name,
+    ladderDir: path.resolve(opt.out || path.join(ROOT, 'ladder')),
+    seasonsDir,
+    readmes: [path.join(ROOT, 'README.md'), path.join(ROOT, 'README.zh-TW.md')],
+    siteUrl: pkg.homepage || '',
+    force: opt.force,
+  });
+  console.log(`\n  archived ${entry.name} → ${entry.dir}/`);
+  console.log(`  champion: ${entry.champion.name} by @${entry.champion.author} (${entry.champion.record}, Elo ${entry.champion.elo})`);
+  console.log(updated.length ? `  Hall of Fame updated in ${updated.map((f) => path.basename(f)).join(', ')}\n` : '  (no Hall of Fame markers found in the READMEs)\n');
 }

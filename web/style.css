@@ -176,7 +176,7 @@ body.replaying .setup { display: none; }
 
 /* ---------- feed ---------- */
 .feed { margin-top: 14px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 14px; max-height: 220px; overflow-y: auto; font-size: 12.5px; }
-.feed:empty::before { content: 'Play-by-play shows up here: reflexes firing, heavy shots, guard breaks, KOs.'; color: var(--dim); }
+.feed:empty::before { content: attr(data-empty); color: var(--dim); }
 .feed .line { display: flex; gap: 10px; padding: 2px 0; }
 .feed .line .ts { font-family: var(--mono); color: var(--dim); flex: none; width: 44px; }
 .feed .line.big { color: var(--gold); font-weight: 600; }
@@ -250,4 +250,60 @@ table.board tr:hover td { background: var(--panel-2); }
   .reflex-row { grid-template-columns: 1fr 1fr; }
   .row3 { grid-template-columns: 1fr; }
   .hud .clock { font-size: 20px; min-width: 50px; }
+  .splash h2 { font-size: 19px; }
+  .splash p { font-size: 12.5px; margin-bottom: 10px; }
+  .playback .pb-title { font-size: 11.5px; }
 }
+
+/* ---------- language, hints, sharing ---------- */
+.lang { background: none; border: 1px solid var(--line-2); color: var(--muted); border-radius: 999px; padding: 5px 11px; cursor: pointer; font-weight: 600; white-space: nowrap; }
+.lang:hover { color: var(--text); border-color: var(--lime); }
+.static-hint { grid-column: 1 / -1; margin: 0; color: var(--muted); font-size: 12.5px; }
+.static-hint code { color: var(--text); }
+.ladder-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.ladder-head h3 { margin-bottom: 0; }
+.season-pick { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12.5px; }
+.season-pick select { width: auto; }
+.row-actions { display: inline-flex; gap: 6px; }
+.ghost.small { padding: 6px 10px; font-size: 12px; color: var(--muted); }
+.match-row .round { font-family: var(--mono); font-size: 11px; color: var(--dim); margin-left: 6px; }
+.list-title { margin: 14px 0 6px; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+#highlightsBox .hint { margin-top: 0; }
+
+/* ---------- broadcast overlay (?overlay=1) ---------- */
+.ov-bar, .ticker, .ov-card { display: none; }
+body.overlay-mode { overflow: hidden; font-size: 15px; }
+body.overlay-mode.transparent { background: transparent; }
+body.overlay-mode .top, body.overlay-mode .setup, body.overlay-mode .feed, body.overlay-mode .playback, body.overlay-mode #overlay, body.overlay-mode .toast { display: none !important; }
+body.overlay-mode main { max-width: none; padding: 22px 26px; height: 100vh; }
+body.overlay-mode #tab-fight { height: 100%; }
+body.overlay-mode .ticker { flex: 1; }
+body.overlay-mode .stage { grid-template-columns: minmax(270px, 15.5vw) minmax(0, 1fr) minmax(270px, 15.5vw); gap: 18px; height: 100%; }
+body.overlay-mode .mind { height: 100%; overflow: hidden; }
+body.overlay-mode .mind .strategy { display: none; }
+body.overlay-mode .arena-col { gap: 12px; height: 100%; }
+body.overlay-mode .arena-wrap { flex: none; width: 100%; margin: 0 auto; }
+body.overlay-mode .hud .name { font-size: 20px; }
+body.overlay-mode .hud .meter.hp { height: 16px; }
+body.overlay-mode .ov-bar { display: flex; align-items: center; gap: 12px; font-size: 16px; }
+.ov-badge { font-family: var(--mono); font-weight: 700; font-size: 12px; letter-spacing: 0.14em; padding: 4px 9px; border-radius: 6px; background: var(--panel-2); color: var(--muted); }
+.ov-badge.live { background: #ff2d55; color: #fff; animation: blink 1.2s infinite alternate; }
+@keyframes blink { from { opacity: 0.55; } to { opacity: 1; } }
+.ov-badge.replay { background: var(--lime); color: #0b1400; }
+.ov-title { font-weight: 600; }
+.ov-title span { color: var(--muted); font-weight: 400; }
+.ov-site { margin-left: auto; font-family: var(--mono); color: var(--muted); font-size: 13px; }
+body.overlay-mode .ticker { display: flex; flex-direction: column; gap: 4px; min-height: 96px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 16px; overflow: hidden; }
+.ticker .tk { color: var(--muted); font-size: 15px; animation: tkIn 0.35s ease-out; }
+.ticker .tk:first-child { color: var(--text); font-size: 21px; font-weight: 600; }
+.ticker .tk.big:first-child { color: var(--gold); }
+.ticker .tk:nth-child(n+3) { opacity: 0.55; }
+@keyframes tkIn { from { transform: translateY(-8px); opacity: 0; } to { transform: none; opacity: 1; } }
+body.overlay-mode .ov-card { display: flex; position: absolute; inset: 0; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; background: rgba(5, 8, 16, 0.82); backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: opacity 0.35s; }
+body.overlay-mode .ov-card.show { opacity: 1; }
+.ov-card .k { font-family: var(--mono); letter-spacing: 0.3em; color: var(--lime); font-weight: 700; font-size: 18px; }
+.ov-card .ov-vs { display: flex; align-items: baseline; gap: 22px; font-size: 54px; font-weight: 800; }
+.ov-card .ov-vs span { font-size: 24px; color: var(--dim); }
+.ov-card .tags { display: flex; gap: 60px; color: var(--muted); font-size: 16px; }
+.ov-card .big { font-size: 64px; font-weight: 800; letter-spacing: 0.02em; }
+.ov-card .sub { color: var(--muted); font-size: 18px; font-family: var(--mono); }

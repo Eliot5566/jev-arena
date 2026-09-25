@@ -5,8 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Jev Arena</title>
   <meta name="description" content="Write a fighter in plain English. A System One model pilots it several times a second." />
+  <meta property="og:title" content="Jev Arena" />
+  <meta property="og:description" content="Write a fighter in plain English. A System One model (Jev) pilots it in real time. Watch every ladder fight with the model's probabilities." />
+  <meta property="og:image" content="https://raw.githubusercontent.com/Eliot5566/jev-arena/main/docs/social-preview.png" />
+  <meta name="twitter:card" content="summary_large_image" />
   <!-- Point this at your fork so the header links to the right repo. -->
   <meta name="jev-arena-repo" content="https://github.com/Eliot5566/jev-arena" />
+  <!-- Public site, used for share links copied from a local arena. -->
+  <meta name="jev-arena-site" content="https://eliot5566.github.io/jev-arena/" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23070b16'/%3E%3Cpath d='M8 24 L24 8 M8 8 L24 24' stroke='%23c6ff3d' stroke-width='3.5' stroke-linecap='round'/%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -17,13 +23,14 @@
   <header class="top">
     <div class="brand"><span class="logo">⚔</span>JEV ARENA<span class="ver" id="ver"></span></div>
     <nav class="tabs" id="tabs">
-      <button data-tab="fight" class="active">Fight</button>
-      <button data-tab="lab">Fighter Lab</button>
-      <button data-tab="replays">Replays</button>
-      <button data-tab="ladder">Ladder</button>
-      <button data-tab="about">How it works</button>
+      <button data-tab="fight" class="active" data-i18n="nav.fight">Fight</button>
+      <button data-tab="lab" data-i18n="nav.lab">Fighter Lab</button>
+      <button data-tab="replays" data-i18n="nav.replays">Replays</button>
+      <button data-tab="ladder" data-i18n="nav.ladder">Ladder</button>
+      <button data-tab="about" data-i18n="nav.about">How it works</button>
     </nav>
-    <a class="gh" id="repoLink" href="#" target="_blank" rel="noopener">★ Star on GitHub</a>
+    <button class="lang" id="langBtn" data-i18n="nav.lang" data-i18n-title="nav.langTitle">中文</button>
+    <a class="gh" id="repoLink" href="#" target="_blank" rel="noopener" data-i18n="nav.star">★ Star on GitHub</a>
   </header>
 
   <main>
@@ -31,28 +38,30 @@
     <section class="tab active" id="tab-fight">
       <div class="setup">
         <div class="corner red">
-          <label>Red corner</label>
+          <label data-i18n="setup.red">Red corner</label>
           <select id="fighterA" aria-label="Red fighter"></select>
           <select id="brainA" aria-label="Red brain"></select>
         </div>
         <div class="vs">VS</div>
         <div class="corner blue">
-          <label>Blue corner</label>
+          <label data-i18n="setup.blue">Blue corner</label>
           <select id="fighterB" aria-label="Blue fighter"></select>
           <select id="brainB" aria-label="Blue brain"></select>
         </div>
         <div class="controls">
-          <div class="seg" id="modeSeg" title="Real-time: the world never waits, slow brains act less often. Lockstep: the world pauses for both brains, only decision quality matters.">
-            <button data-mode="realtime" class="on">Real-time</button>
-            <button data-mode="lockstep">Lockstep</button>
+          <div class="seg" id="modeSeg" data-i18n-title="setup.modeTitle">
+            <button data-mode="realtime" class="on" data-i18n="setup.realtime">Real-time</button>
+            <button data-mode="lockstep" data-i18n="setup.lockstep">Lockstep</button>
           </div>
-          <button class="primary" id="fightBtn">FIGHT</button>
+          <button class="primary" id="fightBtn" data-i18n="setup.fight">FIGHT</button>
         </div>
+        <p class="static-hint" id="staticHint" data-i18n-html="setup.staticHint" hidden></p>
       </div>
 
       <div class="stage">
         <aside class="mind" id="mindA"></aside>
         <div class="arena-col">
+          <div class="ov-bar" id="ovBar"><span class="ov-badge" id="ovBadge"></span><span class="ov-title" id="ovTitle"></span><span class="ov-site" id="ovSite"></span></div>
           <div class="hud" id="hud">
             <div class="side left">
               <div class="name" id="hudNameA">Red</div>
@@ -70,22 +79,24 @@
             <canvas id="arena"></canvas>
             <div class="overlay show" id="overlay">
               <div class="splash">
-                <h2>WRITE A FIGHTER IN PLAIN ENGLISH</h2>
-                <p>Every few hundred milliseconds a System One model reads the fight, weighs every move, and picks one.
-                  You write the strategy. It supplies the reflexes.</p>
-                <button class="primary" id="splashFight">FIGHT</button>
+                <h2 data-i18n="splash.title">WRITE A FIGHTER IN PLAIN ENGLISH</h2>
+                <p data-i18n="splash.body">Every few hundred milliseconds a System One model reads the fight, weighs every move, and picks one. You write the strategy. It supplies the reflexes.</p>
+                <button class="primary" id="splashFight" data-i18n="setup.fight">FIGHT</button>
               </div>
             </div>
+            <div class="ov-card" id="ovCard"></div>
           </div>
+          <div class="ticker" id="ticker"></div>
           <div class="playback" id="playback">
             <span class="pb-title" id="pbTitle"></span>
-            <button class="ghost" id="pbPlay">Pause</button>
+            <button class="ghost" id="pbPlay" data-i18n="pb.pause">Pause</button>
             <div class="seg" id="pbSpeed">
               <button data-speed="0.5">½×</button><button data-speed="1" class="on">1×</button><button data-speed="2">2×</button><button data-speed="4">4×</button>
             </div>
             <input type="range" id="pbScrub" min="0" max="1200" value="0" />
             <span class="t" id="pbTime">0.0s</span>
-            <button class="ghost" id="pbExit">New fight</button>
+            <button class="ghost" id="pbShare" data-i18n="pb.share" hidden>Copy link</button>
+            <button class="ghost" id="pbExit" data-i18n="pb.exit">New fight</button>
           </div>
         </div>
         <aside class="mind" id="mindB"></aside>
@@ -97,40 +108,40 @@
     <section class="tab" id="tab-lab">
       <div class="lab">
         <div class="card">
-          <h3>Fighter Lab</h3>
-          <p class="hint">Your fighter is a paragraph of English plus a few optional reflexes. Each decision, the brain gets the fight state, your strategy as the instruction, and every legal move as a choice. Reflexes are yes/no checks with a threshold that override the strategy when they fire.</p>
+          <h3 data-i18n="lab.title">Fighter Lab</h3>
+          <p class="hint" data-i18n="lab.hint"></p>
           <div class="row3">
-            <div class="field"><label>Name <span class="count" id="cName"></span></label><input type="text" id="labName" maxlength="24" /></div>
-            <div class="field"><label>Author (GitHub)</label><input type="text" id="labAuthor" /></div>
-            <div class="field"><label>Color</label><input type="text" id="labColor" placeholder="#38bdf8" /></div>
+            <div class="field"><label><span data-i18n="lab.name">Name</span> <span class="count" id="cName"></span></label><input type="text" id="labName" maxlength="24" /></div>
+            <div class="field"><label data-i18n="lab.author">Author (GitHub)</label><input type="text" id="labAuthor" /></div>
+            <div class="field"><label data-i18n="lab.color">Color</label><input type="text" id="labColor" placeholder="#38bdf8" /></div>
           </div>
-          <div class="field"><label>Tagline <span class="count" id="cTag"></span></label><input type="text" id="labTagline" maxlength="90" /></div>
-          <div class="field"><label>Strategy <span class="count" id="cStrat"></span></label><textarea id="labStrategy"></textarea></div>
+          <div class="field"><label><span data-i18n="lab.tagline">Tagline</span> <span class="count" id="cTag"></span></label><input type="text" id="labTagline" maxlength="90" /></div>
+          <div class="field"><label><span data-i18n="lab.strategy">Strategy</span> <span class="count" id="cStrat"></span></label><textarea id="labStrategy"></textarea></div>
           <div class="field">
-            <label>Reflexes <span class="count">up to 4 · fire when p ≥ threshold</span></label>
+            <label><span data-i18n="lab.reflexes">Reflexes</span> <span class="count" data-i18n="lab.reflexesHint">up to 4 · fire when p ≥ threshold</span></label>
             <div id="labReflexes"></div>
-            <button class="ghost" id="labAddReflex">+ Add reflex</button>
+            <button class="ghost" id="labAddReflex" data-i18n="lab.addReflex">+ Add reflex</button>
           </div>
           <details class="more">
-            <summary>Coach's notes on specific moves (optional)</summary>
+            <summary data-i18n="lab.notes">Coach's notes on specific moves (optional)</summary>
             <div class="notes" id="labNotes"></div>
           </details>
           <div class="row">
-            <div class="field"><label>Fallback move (when unsure)</label><select id="labFallback"></select></div>
-            <div class="field"><label>Min confidence <span class="count" id="cConf"></span></label><input type="range" id="labConf" min="0" max="0.9" step="0.05" style="width:100%;accent-color:var(--lime)" /></div>
+            <div class="field"><label data-i18n="lab.fallback">Fallback move (when unsure)</label><select id="labFallback"></select></div>
+            <div class="field"><label><span data-i18n="lab.minConf">Min confidence</span> <span class="count" id="cConf"></span></label><input type="range" id="labConf" min="0" max="0.9" step="0.05" style="width:100%;accent-color:var(--lime)" /></div>
           </div>
         </div>
         <div class="card">
-          <h3>Try it</h3>
-          <p class="hint">Start from an existing fighter, tweak the English, and send it into the ring. When you like it, copy the YAML into <code>fighters/your-name.yaml</code> and open a pull request to join the ladder.</p>
+          <h3 data-i18n="lab.tryTitle">Try it</h3>
+          <p class="hint" data-i18n-html="lab.tryHint"></p>
           <div class="row">
-            <div class="field"><label>Start from</label><select id="labTemplate"></select></div>
-            <div class="field"><label>Opponent</label><select id="labOpponent"></select></div>
+            <div class="field"><label data-i18n="lab.startFrom">Start from</label><select id="labTemplate"></select></div>
+            <div class="field"><label data-i18n="lab.opponent">Opponent</label><select id="labOpponent"></select></div>
           </div>
           <div class="controls" style="margin-bottom:10px">
-            <button class="primary" id="labFight">TEST FIGHT</button>
-            <button class="ghost" id="labCopy">Copy YAML</button>
-            <button class="ghost" id="labDownload">Download .yaml</button>
+            <button class="primary" id="labFight" data-i18n="lab.testFight">TEST FIGHT</button>
+            <button class="ghost" id="labCopy" data-i18n="lab.copyYaml">Copy YAML</button>
+            <button class="ghost" id="labDownload" data-i18n="lab.download">Download .yaml</button>
           </div>
           <div id="labStatus"></div>
           <pre class="yaml" id="labYaml"></pre>
@@ -141,11 +152,17 @@
     <!-- ================= REPLAYS ================= -->
     <section class="tab" id="tab-replays">
       <div class="card">
-        <h3>Replays</h3>
-        <p class="hint">Every fight is a seed plus a list of decisions, so a replay re-simulates the fight exactly, with each decision's probabilities. Load one from the ladder or from a file saved by <code>jev-arena fight --out</code>.</p>
+        <h3 data-i18n="replays.title">Replays</h3>
+        <p class="hint" data-i18n-html="replays.hint"></p>
         <div class="controls" style="margin-bottom:12px">
-          <label class="ghost" style="display:inline-block">Open replay file… <input type="file" id="replayFile" accept=".json,application/json" hidden /></label>
-          <button class="ghost" id="replayLast" disabled>Watch the last fight again</button>
+          <label class="ghost" style="display:inline-block"><span data-i18n="replays.open">Open replay file…</span> <input type="file" id="replayFile" accept=".json,application/json" hidden /></label>
+          <button class="ghost" id="replayLast" disabled data-i18n="replays.last">Watch the last fight again</button>
+        </div>
+        <div id="highlightsBox" hidden>
+          <h4 class="list-title" data-i18n="replays.highlights">Highlights</h4>
+          <p class="hint" data-i18n="replays.highlightsHint"></p>
+          <div class="list" id="highlightList"></div>
+          <h4 class="list-title" data-i18n="replays.ladder">Current ladder</h4>
         </div>
         <div class="list" id="replayList"></div>
       </div>
@@ -154,8 +171,11 @@
     <!-- ================= LADDER ================= -->
     <section class="tab" id="tab-ladder">
       <div class="card">
-        <h3>Ladder</h3>
-        <p class="hint" id="ladderMeta">Every fighter plays every other fighter. Add yours with a pull request and CI runs it against the field.</p>
+        <div class="ladder-head">
+          <h3 data-i18n="ladder.title">Ladder</h3>
+          <label class="season-pick" id="seasonPick" hidden><span data-i18n="ladder.season">Season</span> <select id="seasonSelect"></select></label>
+        </div>
+        <p class="hint" id="ladderMeta" data-i18n="ladder.hint">Every fighter plays every other fighter. Add yours with a pull request and CI runs it against the field.</p>
         <div id="ladderBody"></div>
       </div>
     </section>
@@ -163,36 +183,30 @@
     <!-- ================= ABOUT ================= -->
     <section class="tab" id="tab-about">
       <div class="about">
-        <h2>Game AI written in English, run at reflex speed</h2>
-        <p>LLMs are great at thinking and terrible at twitch reflexes: by the time one has written its answer, the heavy shot has already landed. <b>System One models</b> such as TypeSafe's Jev don't write text. They read a state and return typed decisions with calibrated probabilities in a few hundred milliseconds, which is fast enough to pilot a fighter in real time.</p>
+        <h2 data-i18n="about.title">Game AI written in English, run at reflex speed</h2>
+        <p data-i18n-html="about.p1"></p>
         <div class="flow">
-          <div class="step"><b>1 · State</b>The engine turns the fight into plain facts. <code>"enemy charging heavy shot: YES, fires in 0.4s"</code></div>
-          <div class="step"><b>2 · Questions</b>Your strategy becomes a <code>Choice</code> over every legal move. Each reflex becomes a <code>Noul</code> (yes/no).</div>
-          <div class="step"><b>3 · Typed answer</b>The brain returns a probability for every move and every reflex, plus a confidence.</div>
-          <div class="step"><b>4 · Move</b>A fired reflex wins. Otherwise the top move, if the brain is confident enough. Otherwise your fallback.</div>
+          <div class="step" data-i18n-html="about.s1"></div>
+          <div class="step" data-i18n-html="about.s2"></div>
+          <div class="step" data-i18n-html="about.s3"></div>
+          <div class="step" data-i18n-html="about.s4"></div>
         </div>
-        <h3>Real-time vs lockstep</h3>
-        <p>In <b>real-time</b> mode the world never waits: a brain is asked again as soon as it answers, so a 250 ms brain acts four times a second and a 3 s brain barely acts. In <b>lockstep</b> mode the world freezes every 0.2 s until both brains answer, so only decision quality counts. Try the same fighter both ways with a slow brain.</p>
-        <h3>Brains</h3>
+        <h3 data-i18n="about.rtTitle">Real-time vs lockstep</h3>
+        <p data-i18n-html="about.rt"></p>
+        <h3 data-i18n="about.brainsTitle">Brains</h3>
         <ul>
-          <li><b>Jev</b>: TypeSafe's System One model, the headliner. Set <code>TYPESAFE_API_KEY</code> and run <code>npx jev-arena</code>.</li>
-          <li><b>Laya, kev and other open models</b>: anything that speaks the System One HTTP protocol. Point <code>JEV_ARENA_ENDPOINTS</code> at it.</li>
-          <li><b>Any chat LLM</b> (OpenAI, OpenRouter, Ollama...): translated to JSON prompts, for comparison. Its probabilities are self-reported, not calibrated.</li>
-          <li><b>Mock</b>: offline keyword heuristics, so the arena works with no key at all. It is not smart.</li>
+          <li data-i18n-html="about.b1"></li>
+          <li data-i18n-html="about.b2"></li>
+          <li data-i18n-html="about.b3"></li>
+          <li data-i18n-html="about.b4"></li>
         </ul>
-        <p class="hint">Unofficial community project. Not affiliated with TypeSafe AI. "Jev" is TypeSafe's model.</p>
+        <h3 data-i18n="about.streamTitle">Stream it</h3>
+        <p data-i18n-html="about.stream"></p>
+        <p class="hint" data-i18n="about.note"></p>
       </div>
     </section>
   </main>
 
-  <div class="modal" id="keyModal">
-    <div class="card">
-      <h3>Use your TypeSafe key</h3>
-      <p class="hint">The key stays in this tab's memory and goes only to api.typesafe.ai. If the API refuses browser requests, run the arena locally instead: <code>TYPESAFE_API_KEY=… npx jev-arena</code>.</p>
-      <div class="field"><input type="password" id="keyInput" placeholder="ts-..." autocomplete="off" /></div>
-      <div class="controls"><button class="primary" id="keySave">USE KEY</button><button class="ghost" id="keyCancel">Cancel</button></div>
-    </div>
-  </div>
   <div class="modal" id="resultModal"></div>
   <div class="toast" id="toast"></div>
 

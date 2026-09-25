@@ -80,7 +80,7 @@ Every movement, every action and every reflex has a probability, and the arena s
 npx jev-arena
 ```
 
-Open http://localhost:5173 and press **FIGHT**. It works without any key: the offline **mock brain** (keyword heuristics, not AI) pilots both corners so you can explore right away.
+Open http://localhost:5173 and press **FIGHT**. It works without any key: the offline **mock brain** (keyword heuristics, not AI) pilots both corners so you can explore right away. The **Replays** tab already has all 30 real Jev ladder fights, with every probability the model returned.
 
 Let Jev pilot:
 

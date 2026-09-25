@@ -2,6 +2,15 @@
   "name": "jev-arena",
   "version": "0.1.0",
   "description": "Write a fighter in plain English. A System One model (Jev) pilots it several times a second. Real-time bot battles, a PR-driven ladder, and brain swaps (Jev, Laya, kev, any LLM).",
+  "author": "Eliot5566",
+  "homepage": "https://eliot5566.github.io/jev-arena/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Eliot5566/jev-arena.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Eliot5566/jev-arena/issues"
+  },
   "type": "module",
   "bin": {
     "jev-arena": "bin/jev-arena.js"
@@ -34,7 +43,9 @@
     "src",
     "web",
     "fighters",
+    "ladder",
     "README.md",
+    "README.zh-TW.md",
     "LICENSE"
   ],
   "dependencies": {

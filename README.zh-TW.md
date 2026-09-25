@@ -69,7 +69,7 @@ fallback: take_cover
 npx jev-arena
 ```
 
-打開 http://localhost:5173 按 **FIGHT**。不需要任何金鑰：沒有金鑰時會由離線的 **mock 大腦**（關鍵字規則，不是 AI）操控兩邊，讓你先玩玩看。
+打開 http://localhost:5173 按 **FIGHT**。不需要任何金鑰：沒有金鑰時會由離線的 **mock 大腦**（關鍵字規則，不是 AI）操控兩邊，讓你先玩玩看。**Replays** 分頁裡已經有 30 場真正的 Jev 天梯對戰，模型回傳的每個機率都看得到。
 
 讓 Jev 上場：
 

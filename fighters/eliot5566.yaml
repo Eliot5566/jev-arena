@@ -1,5 +1,10 @@
 # Example entry for Jev Arena Season 1. Copy this file, rename it to
 # fighters/<your-github-handle>.yaml, and make it your own.
+#
+# Before opening a PR, check it from your fork's folder (no API key needed):
+#   npm install
+#   npx jev-arena smoke fighters/<your-github-handle>.yaml
+# CI runs the same smoke test and shows the results table on the check's summary page.
 
 name: Counterpunch          # up to 24 characters, must be unique on the ladder
 author: Eliot5566           # your GitHub handle

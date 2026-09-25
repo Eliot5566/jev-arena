@@ -1,25 +1,25 @@
 {
-  "generatedAt": "2026-09-24T16:52:18.605Z",
-  "brain": "jev",
-  "mode": "realtime",
+  "generatedAt": "2026-09-25T05:28:31.623Z",
+  "brain": "mock",
+  "mode": "lockstep",
   "gamesPerPair": 2,
   "fighters": [
     {
-      "id": "trickster",
-      "name": "Trickster",
+      "id": "berserker",
+      "name": "Berserker",
       "author": "jev-arena",
-      "color": "#fbbf24",
-      "tagline": "Now you see me.",
-      "elo": 1063,
+      "color": "#f43f5e",
+      "tagline": "Never heard of range.",
+      "elo": 1055,
       "w": 8,
       "d": 0,
       "l": 2,
       "games": 10,
-      "damageDealt": 908,
-      "damageTaken": 780,
+      "damageDealt": 1011,
+      "damageTaken": 771,
       "kos": 8,
-      "decisionsPerSecond": 3.7,
-      "p50LatencyMs": 230
+      "decisionsPerSecond": 5.1,
+      "p50LatencyMs": 83
     },
     {
       "id": "zen",
@@ -27,67 +27,33 @@
       "author": "jev-arena",
       "color": "#e2e8f0",
       "tagline": "One sentence. No reflexes. How far does that go?",
-      "elo": 1062,
-      "w": 8,
-      "d": 0,
-      "l": 2,
-      "games": 10,
-      "damageDealt": 800,
-      "damageTaken": 619,
-      "kos": 8,
-      "decisionsPerSecond": 3.7,
-      "p50LatencyMs": 230
-    },
-    {
-      "id": "tortoise",
-      "name": "Tortoise",
-      "author": "jev-arena",
-      "color": "#4ade80",
-      "tagline": "Slow and steady. Lets you make the mistake.",
-      "elo": 1039,
+      "elo": 1041,
       "w": 7,
       "d": 0,
       "l": 3,
       "games": 10,
-      "damageDealt": 640,
-      "damageTaken": 799,
+      "damageDealt": 888,
+      "damageTaken": 712,
       "kos": 7,
-      "decisionsPerSecond": 3.7,
-      "p50LatencyMs": 231
+      "decisionsPerSecond": 5,
+      "p50LatencyMs": 81
     },
     {
-      "id": "berserker",
-      "name": "Berserker",
+      "id": "trickster",
+      "name": "Trickster",
       "author": "jev-arena",
-      "color": "#f43f5e",
-      "tagline": "Never heard of range.",
-      "elo": 994,
-      "w": 5,
+      "color": "#fbbf24",
+      "tagline": "Now you see me.",
+      "elo": 1018,
+      "w": 6,
       "d": 0,
-      "l": 5,
+      "l": 4,
       "games": 10,
-      "damageDealt": 761,
-      "damageTaken": 881,
-      "kos": 5,
-      "decisionsPerSecond": 3.7,
-      "p50LatencyMs": 231
-    },
-    {
-      "id": "glass-cannon",
-      "name": "Glass Cannon",
-      "author": "jev-arena",
-      "color": "#fb923c",
-      "tagline": "Every shot is a heavy shot.",
-      "elo": 938,
-      "w": 2,
-      "d": 0,
-      "l": 8,
-      "games": 10,
-      "damageDealt": 641,
-      "damageTaken": 1049,
-      "kos": 2,
-      "decisionsPerSecond": 3.7,
-      "p50LatencyMs": 230
+      "damageDealt": 815,
+      "damageTaken": 874,
+      "kos": 6,
+      "decisionsPerSecond": 5,
+      "p50LatencyMs": 80
     },
     {
       "id": "sniper",
@@ -95,16 +61,50 @@
       "author": "jev-arena",
       "color": "#a78bfa",
       "tagline": "If you can see me, it is already too late.",
-      "elo": 905,
-      "w": 0,
+      "elo": 984,
+      "w": 4,
       "d": 0,
-      "l": 10,
+      "l": 6,
       "games": 10,
-      "damageDealt": 611,
-      "damageTaken": 1030,
-      "kos": 0,
-      "decisionsPerSecond": 3.7,
-      "p50LatencyMs": 230
+      "damageDealt": 911,
+      "damageTaken": 905,
+      "kos": 4,
+      "decisionsPerSecond": 5,
+      "p50LatencyMs": 80
+    },
+    {
+      "id": "tortoise",
+      "name": "Tortoise",
+      "author": "jev-arena",
+      "color": "#4ade80",
+      "tagline": "Slow and steady. Lets you make the mistake.",
+      "elo": 967,
+      "w": 3,
+      "d": 0,
+      "l": 7,
+      "games": 10,
+      "damageDealt": 748,
+      "damageTaken": 936,
+      "kos": 3,
+      "decisionsPerSecond": 5,
+      "p50LatencyMs": 80
+    },
+    {
+      "id": "glass-cannon",
+      "name": "Glass Cannon",
+      "author": "jev-arena",
+      "color": "#fb923c",
+      "tagline": "Every shot is a heavy shot.",
+      "elo": 934,
+      "w": 2,
+      "d": 0,
+      "l": 8,
+      "games": 10,
+      "damageDealt": 668,
+      "damageTaken": 1072,
+      "kos": 2,
+      "decisionsPerSecond": 5.1,
+      "p50LatencyMs": 81
     }
   ],
   "matches": [
@@ -114,13 +114,13 @@
       "b": "glass-cannon",
       "winner": "berserker",
       "reason": "ko",
-      "seconds": 17.2,
+      "seconds": 7.5,
       "hp": [
-        44,
+        30,
         0
       ],
       "file": "replays/berserker__glass-cannon__g1.json",
-      "costUsd": 0.007458
+      "costUsd": null
     },
     {
       "key": "berserker__glass-cannon__g2",
@@ -128,13 +128,13 @@
       "b": "berserker",
       "winner": "berserker",
       "reason": "ko",
-      "seconds": 12.5,
+      "seconds": 7.5,
       "hp": [
         0,
-        18.6
+        30
       ],
       "file": "replays/berserker__glass-cannon__g2.json",
-      "costUsd": 0.005379
+      "costUsd": null
     },
     {
       "key": "berserker__sniper__g1",
@@ -142,13 +142,13 @@
       "b": "sniper",
       "winner": "berserker",
       "reason": "ko",
-      "seconds": 15.1,
+      "seconds": 10.4,
       "hp": [
-        37,
+        44,
         0
       ],
       "file": "replays/berserker__sniper__g1.json",
-      "costUsd": 0.006617
+      "costUsd": null
     },
     {
       "key": "berserker__sniper__g2",
@@ -156,55 +156,55 @@
       "b": "berserker",
       "winner": "berserker",
       "reason": "ko",
-      "seconds": 12.2,
+      "seconds": 10.4,
       "hp": [
         0,
-        37
+        49.6
       ],
       "file": "replays/berserker__sniper__g2.json",
-      "costUsd": 0.005182
+      "costUsd": null
     },
     {
       "key": "berserker__tortoise__g1",
       "a": "berserker",
       "b": "tortoise",
-      "winner": "tortoise",
+      "winner": "berserker",
       "reason": "ko",
-      "seconds": 14.3,
+      "seconds": 10.2,
       "hp": [
-        0,
-        33.6
+        37,
+        0
       ],
       "file": "replays/berserker__tortoise__g1.json",
-      "costUsd": 0.006491
+      "costUsd": null
     },
     {
       "key": "berserker__tortoise__g2",
       "a": "tortoise",
       "b": "berserker",
-      "winner": "tortoise",
+      "winner": "berserker",
       "reason": "ko",
-      "seconds": 13.5,
+      "seconds": 11.7,
       "hp": [
-        40.6,
-        0
+        0,
+        4.6
       ],
       "file": "replays/berserker__tortoise__g2.json",
-      "costUsd": 0.006135
+      "costUsd": null
     },
     {
       "key": "berserker__trickster__g1",
       "a": "berserker",
       "b": "trickster",
-      "winner": "trickster",
+      "winner": "berserker",
       "reason": "ko",
-      "seconds": 10.9,
+      "seconds": 7.9,
       "hp": [
-        0,
-        56
+        4,
+        0
       ],
       "file": "replays/berserker__trickster__g1.json",
-      "costUsd": 0.004806
+      "costUsd": null
     },
     {
       "key": "berserker__trickster__g2",
@@ -212,13 +212,13 @@
       "b": "berserker",
       "winner": "trickster",
       "reason": "ko",
-      "seconds": 12.2,
+      "seconds": 9.7,
       "hp": [
-        45,
+        18,
         0
       ],
       "file": "replays/berserker__trickster__g2.json",
-      "costUsd": 0.005309
+      "costUsd": null
     },
     {
       "key": "berserker__zen__g1",
@@ -226,13 +226,13 @@
       "b": "zen",
       "winner": "berserker",
       "reason": "ko",
-      "seconds": 20.5,
+      "seconds": 7.5,
       "hp": [
-        12,
+        30.2,
         0
       ],
       "file": "replays/berserker__zen__g1.json",
-      "costUsd": 0.008471
+      "costUsd": null
     },
     {
       "key": "berserker__zen__g2",
@@ -240,13 +240,13 @@
       "b": "berserker",
       "winner": "zen",
       "reason": "ko",
-      "seconds": 15.7,
+      "seconds": 7.5,
       "hp": [
-        64,
+        1,
         0
       ],
       "file": "replays/berserker__zen__g2.json",
-      "costUsd": 0.0065
+      "costUsd": null
     },
     {
       "key": "glass-cannon__sniper__g1",
@@ -254,41 +254,41 @@
       "b": "sniper",
       "winner": "glass-cannon",
       "reason": "ko",
-      "seconds": 51.6,
+      "seconds": 30.7,
       "hp": [
-        9.7,
+        3.2,
         0
       ],
       "file": "replays/glass-cannon__sniper__g1.json",
-      "costUsd": 0.023858
+      "costUsd": null
     },
     {
       "key": "glass-cannon__sniper__g2",
       "a": "sniper",
       "b": "glass-cannon",
-      "winner": "glass-cannon",
+      "winner": "sniper",
       "reason": "ko",
-      "seconds": 50.8,
+      "seconds": 24.6,
       "hp": [
-        0,
-        7
+        30,
+        0
       ],
       "file": "replays/glass-cannon__sniper__g2.json",
-      "costUsd": 0.023163
+      "costUsd": null
     },
     {
       "key": "glass-cannon__tortoise__g1",
       "a": "glass-cannon",
       "b": "tortoise",
-      "winner": "tortoise",
+      "winner": "glass-cannon",
       "reason": "ko",
-      "seconds": 52.2,
+      "seconds": 18.9,
       "hp": [
-        0,
-        34.6
+        14.6,
+        0
       ],
       "file": "replays/glass-cannon__tortoise__g1.json",
-      "costUsd": 0.024714
+      "costUsd": null
     },
     {
       "key": "glass-cannon__tortoise__g2",
@@ -296,13 +296,13 @@
       "b": "glass-cannon",
       "winner": "tortoise",
       "reason": "ko",
-      "seconds": 52.5,
+      "seconds": 28.4,
       "hp": [
-        25.4,
+        46.8,
         0
       ],
       "file": "replays/glass-cannon__tortoise__g2.json",
-      "costUsd": 0.025061
+      "costUsd": null
     },
     {
       "key": "glass-cannon__trickster__g1",
@@ -310,13 +310,13 @@
       "b": "trickster",
       "winner": "trickster",
       "reason": "ko",
-      "seconds": 32.2,
+      "seconds": 18.5,
       "hp": [
         0,
-        24
+        26.5
       ],
       "file": "replays/glass-cannon__trickster__g1.json",
-      "costUsd": 0.013847
+      "costUsd": null
     },
     {
       "key": "glass-cannon__trickster__g2",
@@ -324,13 +324,13 @@
       "b": "glass-cannon",
       "winner": "trickster",
       "reason": "ko",
-      "seconds": 45.4,
+      "seconds": 11.7,
       "hp": [
-        53.7,
+        65,
         0
       ],
       "file": "replays/glass-cannon__trickster__g2.json",
-      "costUsd": 0.019982
+      "costUsd": null
     },
     {
       "key": "glass-cannon__zen__g1",
@@ -338,13 +338,13 @@
       "b": "zen",
       "winner": "zen",
       "reason": "ko",
-      "seconds": 45.6,
+      "seconds": 8.3,
       "hp": [
         0,
-        16.7
+        49.2
       ],
       "file": "replays/glass-cannon__zen__g1.json",
-      "costUsd": 0.019411
+      "costUsd": null
     },
     {
       "key": "glass-cannon__zen__g2",
@@ -352,41 +352,41 @@
       "b": "glass-cannon",
       "winner": "zen",
       "reason": "ko",
-      "seconds": 45.1,
+      "seconds": 9.3,
       "hp": [
-        69.9,
+        54.8,
         0
       ],
       "file": "replays/glass-cannon__zen__g2.json",
-      "costUsd": 0.019569
+      "costUsd": null
     },
     {
       "key": "sniper__tortoise__g1",
       "a": "sniper",
       "b": "tortoise",
-      "winner": "tortoise",
+      "winner": "sniper",
       "reason": "ko",
-      "seconds": 50.9,
+      "seconds": 49.3,
       "hp": [
-        0,
-        42.6
+        6.9,
+        0
       ],
       "file": "replays/sniper__tortoise__g1.json",
-      "costUsd": 0.023846
+      "costUsd": null
     },
     {
       "key": "sniper__tortoise__g2",
       "a": "tortoise",
       "b": "sniper",
-      "winner": "tortoise",
+      "winner": "sniper",
       "reason": "ko",
-      "seconds": 51.9,
+      "seconds": 52.8,
       "hp": [
-        53.7,
-        0
+        0,
+        39.4
       ],
       "file": "replays/sniper__tortoise__g2.json",
-      "costUsd": 0.024446
+      "costUsd": null
     },
     {
       "key": "sniper__trickster__g1",
@@ -394,13 +394,13 @@
       "b": "trickster",
       "winner": "trickster",
       "reason": "ko",
-      "seconds": 30.9,
+      "seconds": 50,
       "hp": [
         0,
-        19.6
+        18.3
       ],
       "file": "replays/sniper__trickster__g1.json",
-      "costUsd": 0.013788
+      "costUsd": null
     },
     {
       "key": "sniper__trickster__g2",
@@ -408,13 +408,13 @@
       "b": "sniper",
       "winner": "trickster",
       "reason": "ko",
-      "seconds": 42.4,
+      "seconds": 44.5,
       "hp": [
-        26.7,
+        42.6,
         0
       ],
       "file": "replays/sniper__trickster__g2.json",
-      "costUsd": 0.019762
+      "costUsd": null
     },
     {
       "key": "sniper__zen__g1",
@@ -422,27 +422,27 @@
       "b": "zen",
       "winner": "zen",
       "reason": "ko",
-      "seconds": 51,
+      "seconds": 45.1,
       "hp": [
         0,
-        37.2
+        28.4
       ],
       "file": "replays/sniper__zen__g1.json",
-      "costUsd": 0.021598
+      "costUsd": null
     },
     {
       "key": "sniper__zen__g2",
       "a": "zen",
       "b": "sniper",
-      "winner": "zen",
+      "winner": "sniper",
       "reason": "ko",
-      "seconds": 45.4,
+      "seconds": 46.4,
       "hp": [
-        65.8,
-        0
+        0,
+        18.2
       ],
       "file": "replays/sniper__zen__g2.json",
-      "costUsd": 0.0193
+      "costUsd": null
     },
     {
       "key": "tortoise__trickster__g1",
@@ -450,13 +450,13 @@
       "b": "trickster",
       "winner": "tortoise",
       "reason": "ko",
-      "seconds": 48.2,
+      "seconds": 49,
       "hp": [
-        30.6,
+        22,
         0
       ],
       "file": "replays/tortoise__trickster__g1.json",
-      "costUsd": 0.022501
+      "costUsd": null
     },
     {
       "key": "tortoise__trickster__g2",
@@ -464,13 +464,13 @@
       "b": "tortoise",
       "winner": "trickster",
       "reason": "ko",
-      "seconds": 52.7,
+      "seconds": 45.9,
       "hp": [
-        33.4,
+        41.9,
         0
       ],
       "file": "replays/tortoise__trickster__g2.json",
-      "costUsd": 0.023889
+      "costUsd": null
     },
     {
       "key": "tortoise__zen__g1",
@@ -478,27 +478,27 @@
       "b": "zen",
       "winner": "zen",
       "reason": "ko",
-      "seconds": 51,
+      "seconds": 47.3,
       "hp": [
         0,
-        30.6
+        40.1
       ],
       "file": "replays/tortoise__zen__g1.json",
-      "costUsd": 0.022754
+      "costUsd": null
     },
     {
       "key": "tortoise__zen__g2",
       "a": "zen",
       "b": "tortoise",
-      "winner": "zen",
+      "winner": "tortoise",
       "reason": "ko",
-      "seconds": 46.8,
+      "seconds": 48.6,
       "hp": [
-        71.8,
-        0
+        0,
+        25.4
       ],
       "file": "replays/tortoise__zen__g2.json",
-      "costUsd": 0.021057
+      "costUsd": null
     },
     {
       "key": "trickster__zen__g1",
@@ -506,29 +506,29 @@
       "b": "zen",
       "winner": "zen",
       "reason": "ko",
-      "seconds": 44.5,
+      "seconds": 14.4,
       "hp": [
         0,
-        34.4
+        56.6
       ],
       "file": "replays/trickster__zen__g1.json",
-      "costUsd": 0.018615
+      "costUsd": null
     },
     {
       "key": "trickster__zen__g2",
       "a": "zen",
       "b": "trickster",
-      "winner": "trickster",
+      "winner": "zen",
       "reason": "ko",
-      "seconds": 51.8,
+      "seconds": 15.4,
       "hp": [
-        0,
-        54.3
+        58,
+        0
       ],
       "file": "replays/trickster__zen__g2.json",
-      "costUsd": 0.021966
+      "costUsd": null
     }
   ],
-  "totalCostUsd": 0.48548,
-  "inputs": "c7dc3742332f7863"
+  "totalCostUsd": 0,
+  "inputs": "35b70c396f5fbbaf"
 }

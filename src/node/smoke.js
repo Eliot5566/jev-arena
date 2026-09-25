@@ -57,7 +57,7 @@ export function smokeMarkdown(report) {
     `|---|${'---|'.repeat(report.games)}`,
     ...report.opponents.map((o) => `| ${o.name} | ${o.games.map(cellText).join(' | ')} |`),
     '',
-    `**Record vs the field (mock brain): ${report.record.w}-${report.record.d}-${report.record.l}**`,
+    `**Record vs the field (offline brain): ${report.record.w}-${report.record.d}-${report.record.l}**`,
     '',
   ];
   return lines.join('\n');

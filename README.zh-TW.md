@@ -105,7 +105,7 @@ TYPESAFE_API_KEY=ts-... npx jev-arena     # 金鑰在 https://console.typesafe.a
 
 1. 在**機器人工作室**分頁設計機器人：改英文戰術、按**試打**，反覆調整。
 2. 按**複製 YAML**，存成 `fighters/<你的 GitHub 帳號>.yaml`。
-3. 先在本機檢查：`npx jev-arena smoke fighters/<你的 GitHub 帳號>.yaml` 會驗證格式，並用離線大腦和天梯上每個機器人各打兩場。
+3. 先在本機檢查：在你 fork 下來的資料夾先執行一次 `npm install`，再執行 `npx jev-arena smoke fighters/<你的 GitHub 帳號>.yaml`。它會驗證格式，並用離線大腦和天梯上每個機器人各打兩場，不需要 API 金鑰。
 4. 開一個 Pull Request。CI 會跑同樣的試打，結果表格顯示在檢查的摘要頁。可以參考範例 [PR #2](https://github.com/Eliot5566/jev-arena/pull/2)。
 5. 合併後，[天梯 workflow](.github/workflows/ladder.yml) 會用 repo 的 `TYPESAFE_API_KEY` 讓 Jev 重跑天梯，更新 [`ladder/LEADERBOARD.md`](ladder/LEADERBOARD.md)，並把所有重播發布到網站。16 個機器人以內打完整循環賽，超過就自動改用瑞士制。
 

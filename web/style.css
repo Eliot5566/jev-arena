@@ -238,10 +238,15 @@ table.board tr:hover td { background: var(--panel-2); }
   .arena-col { grid-column: 1 / -1; order: -1; }
   .lab { grid-template-columns: 1fr; }
 }
+@media (max-width: 980px) {
+  /* Five tabs plus the buttons don't fit on one row here: give the tabs their own row. */
+  .top { flex-wrap: wrap; row-gap: 8px; }
+  .brand { margin-right: auto; }
+  .tabs { order: 3; flex-basis: 100%; }
+}
 @media (max-width: 760px) {
   main { padding: 12px 12px 40px; }
-  .top { padding: 10px 12px; gap: 10px; flex-wrap: wrap; }
-  .tabs { order: 3; flex-basis: 100%; }
+  .top { padding: 10px 12px; gap: 10px; }
   .setup { grid-template-columns: 1fr; }
   .vs { text-align: center; padding: 0; font-size: 16px; }
   .controls { justify-content: space-between; }

@@ -5,7 +5,7 @@
 1. `npx jev-arena` → **Fighter Lab**. Start from a template or a blank sheet.
 2. Edit the English and press **TEST FIGHT** until you like it.
 3. **Copy YAML** → save as `fighters/<your-github-handle>.yaml`.
-4. `npx jev-arena smoke fighters/<your-github-handle>.yaml` (validates the file and fights it against the field with the offline brain; CI runs the same check)
+4. In your fork's folder: `npm install` once, then `npx jev-arena smoke fighters/<your-github-handle>.yaml` (validates the file and fights it against the field with the offline brain; CI runs the same check)
 5. Open a pull request using the template. [PR #2](https://github.com/Eliot5566/jev-arena/pull/2) is a worked example.
 
 House rules:

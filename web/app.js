@@ -135,9 +135,16 @@ function fillFighterSelects() {
   }
 }
 
+// Built-in brains get a translated name; configured ones (Jev, LLMs) keep the label they were given.
+function brainName(b) {
+  const key = `brain.${b.id}`;
+  const name = t(key);
+  return name === key ? b.label : name;
+}
+
 function fillBrainSelects() {
   const brains = app.config.brains || [];
-  let opts = brains.map((b) => `<option value="${esc(b.id)}" ${b.ready ? '' : 'disabled'}>${esc(b.label)}${b.ready ? '' : ` (${t('setup.notConfigured')})`}</option>`).join('');
+  let opts = brains.map((b) => `<option value="${esc(b.id)}" ${b.ready ? '' : 'disabled'}>${esc(brainName(b))}${b.ready ? '' : ` (${t('setup.notConfigured')})`}</option>`).join('');
   // The public site can't call Jev: the API doesn't accept requests from other websites.
   if (app.config.mode === 'static') {
     opts += `<option value="jev" disabled>${esc(t('setup.jevLocal'))}</option>`;
@@ -168,8 +175,8 @@ function showTab(name) {
 // =============================================================================================
 
 async function makeBrain(id) {
-  if (id === 'mock') return createMockBrain();
-  if (id === 'mock-slow') return createMockBrain({ id: 'mock-slow', label: 'Mock (slow, 1.5s)', latencyMs: [1200, 1800] });
+  if (id === 'mock') return createMockBrain({ label: brainName({ id: 'mock', label: 'Mock' }) });
+  if (id === 'mock-slow') return createMockBrain({ id: 'mock-slow', label: brainName({ id: 'mock-slow', label: 'Mock (slow, 1.5s)' }), latencyMs: [1200, 1800] });
   if (app.config.mode === 'static') throw new Error(t('setup.jevLocal'));
   const meta = (app.config.brains || []).find((b) => b.id === id) || { label: id };
   return {
@@ -687,7 +694,7 @@ function startReplay(replay, { source = null } = {}) {
   $('pbSpeed').querySelectorAll('button').forEach((x) => x.classList.toggle('on', Number(x.dataset.speed) === app.replaySpeed));
   $('pbScrub').max = String(replay.result?.tick ?? C.MATCH_TICKS);
   $('pbScrub').value = '0';
-  if (OVERLAY) setOverlayBar('replay', f, replay.brains[0].label);
+  if (OVERLAY) setOverlayBar('replay', f, replay.brains[0].label, source);
 }
 
 function replayStep(c, now, render = true) {
@@ -866,8 +873,18 @@ async function loadHighlights() {
 // broadcast overlay (?overlay=1)
 // =============================================================================================
 
-function setOverlayBar(kind, fighters, brainLabel) {
-  $('ovBadge').textContent = kind === 'live' ? t('ov.live') : t('ov.replay');
+// The badge says where a replay came from: the current ladder, an archived season or a highlight.
+function replayBadge(source) {
+  const s = String(source || '');
+  const season = app.seasons?.find((x) => x.dir && s.startsWith(`${x.dir}/`));
+  if (season) return t('ov.season', { id: season.id });
+  if (s.startsWith('highlights/')) return t('ov.highlight');
+  if (s.startsWith('ladder/')) return t('ov.replay');
+  return t('ov.replayAny');
+}
+
+function setOverlayBar(kind, fighters, brainLabel, source = null) {
+  $('ovBadge').textContent = kind === 'live' ? t('ov.live') : replayBadge(source);
   $('ovBadge').className = `ov-badge ${kind}`;
   $('ovTitle').innerHTML = `${nameHtml(0, fighters)} ${esc(t('replays.vs'))} ${nameHtml(1, fighters)} <span>· ${esc(brainLabel)}</span>`;
   const site = document.querySelector('meta[name="jev-arena-site"]')?.content || location.href;
@@ -929,7 +946,7 @@ async function bootOverlay() {
       stopCurrent();
       setupStage(replay.fighters, replay.brains.map((b) => b.label), t('stage.replay'), replay.mode);
       renderer.reset();
-      setOverlayBar('replay', replay.fighters, replay.brains[0].label);
+      setOverlayBar('replay', replay.fighters, replay.brains[0].label, files[i]);
       await showCard(nextCard(replay.fighters), 3500);
     }
     startReplay(replay, { source: files[i] });

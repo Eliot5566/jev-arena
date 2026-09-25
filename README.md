@@ -124,7 +124,7 @@ npx jev-arena fight sniper trickster --brain http://localhost:8000/v1/systemone 
 
 1. Design your fighter in the **Fighter Lab** tab: edit the English, press **TEST FIGHT**, repeat.
 2. Press **Copy YAML** and save it as `fighters/<your-github-handle>.yaml`.
-3. Check it locally: `npx jev-arena smoke fighters/<your-github-handle>.yaml` validates the file and fights it against every fighter on the ladder with the offline brain.
+3. Check it locally: in your fork's folder run `npm install` once, then `npx jev-arena smoke fighters/<your-github-handle>.yaml`. It validates the file and fights it against every fighter on the ladder with the offline brain, no API key needed.
 4. Open a pull request. CI runs the same smoke test and posts the results table on the check's summary page. [PR #2](https://github.com/Eliot5566/jev-arena/pull/2) is a worked example you can copy.
 5. When it's merged, the [ladder workflow](.github/workflows/ladder.yml) re-runs the ladder with Jev (using the repo's `TYPESAFE_API_KEY` secret), commits [`ladder/LEADERBOARD.md`](ladder/LEADERBOARD.md), and republishes the site with every replay. Up to 16 fighters play a full round robin; bigger fields switch to a Swiss system automatically.
 

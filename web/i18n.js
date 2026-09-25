@@ -236,6 +236,11 @@ const EN = {
   'ov.next': 'NEXT FIGHT',
   'ov.live': 'LIVE',
   'ov.replay': 'LADDER REPLAY',
+  'ov.highlight': 'HIGHLIGHT',
+  'ov.season': 'SEASON {id} REPLAY',
+  'ov.replayAny': 'REPLAY',
+  'brain.mock': 'Mock (offline heuristics)',
+  'brain.mock-slow': 'Mock (slow, simulates a 1.5s LLM)',
   'ov.winner': 'WINNER',
   'ov.decisions': '{n} decisions · p50 {ms} ms',
 };
@@ -469,6 +474,11 @@ const ZH = {
   'ov.next': '下一場',
   'ov.live': '直播',
   'ov.replay': '天梯重播',
+  'ov.highlight': '精彩對戰',
+  'ov.season': '第 {id} 季重播',
+  'ov.replayAny': '重播',
+  'brain.mock': '模擬大腦（離線規則）',
+  'brain.mock-slow': '模擬大腦（慢速，模仿 1.5 秒的 LLM）',
   'ov.winner': '勝者',
   'ov.decisions': '{n} 次決策 · 中位延遲 {ms} 毫秒',
 };

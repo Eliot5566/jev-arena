@@ -1,0 +1,69 @@
+name: Close season
+
+# Run by hand after the final ladder run of a season. Freezes ladder/ into seasons/<id>/,
+# writes the champion into the README Hall of Fame, and republishes the site, where the
+# Ladder tab gets a season picker.
+
+on:
+  workflow_dispatch:
+    inputs:
+      season:
+        description: 'Season id, for example 1'
+        required: true
+      name:
+        description: 'Display name (default: Season <id>)'
+        required: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: ladder
+  cancel-in-progress: false
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Archive the ladder
+        env:
+          SEASON: ${{ inputs.season }}
+          SEASON_NAME: ${{ inputs.name }}
+        run: |
+          if [ -n "$SEASON_NAME" ]; then
+            node bin/jev-arena.js season archive "$SEASON" --name "$SEASON_NAME"
+          else
+            node bin/jev-arena.js season archive "$SEASON"
+          fi
+      - name: Commit the archive
+        env:
+          SEASON: ${{ inputs.season }}
+        run: |
+          git config user.name "jev-arena-bot"
+          git config user.email "jev-arena-bot@users.noreply.github.com"
+          git add seasons README.md README.zh-TW.md
+          git commit -m "season $SEASON: archive the final standings"
+          git push
+      - name: Build static site
+        run: node bin/jev-arena.js build-site --out dist
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    needs: archive
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

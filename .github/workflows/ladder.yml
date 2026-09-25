@@ -1,7 +1,8 @@
 name: Ladder and site
 
-# Runs the round robin whenever fighters change on main, monthly, or by hand, then publishes the
-# arena (with every replay) to GitHub Pages.
+# Plays the ladder whenever fighters change on main, monthly, or by hand, then publishes the
+# arena (with every replay and archived season) to GitHub Pages. Up to 16 fighters play a full
+# round robin; bigger fields switch to a Swiss system (see --format in the CLI).
 # Add a TYPESAFE_API_KEY repository secret to let Jev play. Without it the ladder uses the
 # offline mock brain so the site still has something to show.
 
@@ -25,10 +26,11 @@ concurrency:
 jobs:
   ladder:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    # A 16-fighter round robin (240 fights at 2 in parallel) takes about 1.5 hours with Jev.
+    timeout-minutes: 360
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
@@ -55,7 +57,7 @@ jobs:
           git push
       - name: Build static site
         run: node bin/jev-arena.js build-site --out dist
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: dist
 
@@ -67,4 +69,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

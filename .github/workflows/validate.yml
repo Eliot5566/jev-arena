@@ -9,10 +9,10 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
@@ -20,14 +20,17 @@ jobs:
       - run: npm test
       - name: Validate every fighter
         run: node bin/jev-arena.js validate
-      - name: Smoke-fight new or changed fighters against the field (offline mock brain, no key needed)
+      - name: Smoke-test new or changed fighters against the field (offline brain, no key needed)
         if: github.event_name == 'pull_request'
         run: |
+          set -o pipefail
           changed=$(git diff --name-only --diff-filter=AM "origin/${{ github.base_ref }}...HEAD" -- fighters/ | grep -E '\.ya?ml$' || true)
-          if [ -z "$changed" ]; then echo "No fighter changes."; exit 0; fi
+          if [ -z "$changed" ]; then
+            echo "No fighter changes in this pull request." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          status=0
           for f in $changed; do
-            for opp in fighters/*.yaml; do
-              [ "$f" = "$opp" ] && continue
-              node bin/jev-arena.js fight "$f" "$opp" --brain instant --mode lockstep --quiet
-            done
+            node bin/jev-arena.js smoke "$f" --markdown | tee -a "$GITHUB_STEP_SUMMARY" || status=1
           done
+          exit $status
